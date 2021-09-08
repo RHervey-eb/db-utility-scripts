@@ -9,15 +9,16 @@ pgPassFile="${HOME}/.pgpass"
 function printAvailableDbs() {
   cat "${pgPassFile}" | cut -d ':' -f -4 | while read -r line; do 
     dbNameInFile="$(echo "${line}" | cut -d ':' -f 3)"; 
+    usernameInFile="$(echo "${line}" | cut -d ':' -f 4)"; 
     environmentInFile="$(echo "${line}" | cut -d ':' -f 1 | cut -d '.' -f 1 | awk -F '-' '{print $NF}')"; 
-    echo "dbName: \"${dbNameInFile}\" environmentName: \"${environmentInFile}\""; 
+    echo "dbName: \"${dbNameInFile}\" username: \"${usernameInFile}\" environmentName: \"${environmentInFile}\""; 
   done
 }
 
 function usage() {
   cat >&2 <<EOF
   
-  Usage: $(basename $0) <dbName> <environmentName>
+  Usage: $(basename $0) <dbName> <username> <environmentName>
 
   This is a utility for reading the db login possiblities from the ~/.pgpass file and making login lookups possible by
     passing in the database name and environment name
@@ -29,15 +30,16 @@ $(printAvailableDbs)
 EOF
 }
 
-if [[ $# != 2 ]]; then
+if [[ $# != 3 ]]; then
   usage
   exit 1
 fi
 
 dbNamePassedIn="${1}"
-envPassedIn="${2}"
+usernamePassedIn="${2}"
+envPassedIn="${3}"
 
-selectedString="$(cat "${pgPassFile}" | grep "${dbNamePassedIn}" | grep "${envPassedIn}")"
+selectedString="$(cat "${pgPassFile}" | grep "${dbNamePassedIn}" | grep "${usernamePassedIn}"| grep "${envPassedIn}")"
 
 if [[ $(echo "${selectedString}" | wc -l) -ne 1 ]]; then
   echo >&2 "The slected string didn't match one line, can't connect to db: \"${dbNamePassedIn}\" for environment: \"${envPassedIn}\""
