@@ -11,7 +11,7 @@ function printAvailableDbs() {
     dbNameInFile="$(echo "${line}" | cut -d ':' -f 3)"; 
     usernameInFile="$(echo "${line}" | cut -d ':' -f 4)"; 
     environmentInFile="$(echo "${line}" | cut -d ':' -f 1 | cut -d '.' -f 1 | awk -F '-' '{print $NF}')"; 
-    echo "dbName: \"${dbNameInFile}\" username: \"${usernameInFile}\" environmentName: \"${environmentInFile}\""; 
+    echo "   ./$(basename $0) ${dbNameInFile} ${usernameInFile} ${environmentInFile}"; 
   done
 }
 
@@ -23,7 +23,7 @@ function usage() {
   This is a utility for reading the db login possiblities from the ~/.pgpass file and making login lookups possible by
     passing in the database name and environment name
 
-  combos available:
+  available:
 
 $(printAvailableDbs)
 
