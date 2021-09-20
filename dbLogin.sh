@@ -9,8 +9,14 @@ pgPassFile="${HOME}/.pgpass"
 function printAvailableDbs() {
   cat "${pgPassFile}" | cut -d ':' -f -4 | while read -r line; do 
     dbNameInFile="$(echo "${line}" | cut -d ':' -f 3)"; 
+    [[ "x${dbNameInFile}" == "x" ]] && continue
+
     usernameInFile="$(echo "${line}" | cut -d ':' -f 4)"; 
+    [[ "x${usernameInFile}" == "x" ]] && continue
+    
     environmentInFile="$(echo "${line}" | cut -d ':' -f 1 | cut -d '.' -f 1 | awk -F '-' '{print $NF}')"; 
+    [[ "x${environmentInFile}" == "x" ]] && continue
+    
     echo "   ./$(basename $0) ${dbNameInFile} ${usernameInFile} ${environmentInFile}"; 
   done
 }
