@@ -22,7 +22,7 @@ function printAvailableDbs() {
 }
 
 function usage() {
-  cat >&2 <<EOF
+  cat <<EOF
   
   Usage: $(basename $0) <dbName> <username> <environmentName>
 
